@@ -1,5 +1,5 @@
-"use client";
-import React, { useState } from "react";
+'use client'
+import { useState } from "react";
 import {
   Button,
   TextField,
@@ -8,22 +8,29 @@ import {
   CardContent,
   Grid,
 } from "@mui/material";
+import { useRouter } from 'next/navigation';
+import { useDispatch } from "react-redux";
+import { loginAsync } from "../../redux/authActions";
 
 const Login: React.FC = () => {
+ 
   const [formData, setFormData] = useState({
-    email: "",
+    username: "",
     password: "",
   });
 
+  const dispatch = useDispatch();
+  const router = useRouter();
+  
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log("Login form submitted:", formData);
+    dispatch(loginAsync(formData));
+    router.push("/task");
   };
 
   return (
@@ -42,10 +49,10 @@ const Login: React.FC = () => {
             <TextField
               fullWidth
               margin="normal"
-              label="Email"
-              name="email"
-              type="email"
-              value={formData.email}
+              label="username"
+              name="username"
+              type="username"
+              value={formData.username}
               onChange={handleInputChange}
             />
             <TextField
