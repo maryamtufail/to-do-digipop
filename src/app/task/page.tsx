@@ -14,8 +14,6 @@ const Task: React.FC = () => {
   );
   const user = useSelector((state: RootState) => state.auth.user);
 
-  console.log(user);
-
   useEffect(() => {
     if (!isAuthenticated) {
       router.push("/login");
@@ -31,7 +29,6 @@ const Task: React.FC = () => {
     <Grid
       container
       justifyContent="center"
-     
       style={{ height: "100vh", marginTop: "20px" }}
     >
       <Grid item xs={6}>
@@ -41,6 +38,7 @@ const Task: React.FC = () => {
         <Button variant="contained" color="primary" onClick={handleLogout}>
           Logout
         </Button>
+    
       </Grid>
     </Grid>
   );

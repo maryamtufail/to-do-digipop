@@ -7,29 +7,29 @@ import {
   Card,
   CardContent,
   Grid,
+  IconButton,
+  InputAdornment,
 } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import Link from 'next/link';
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { signupAsync } from "../../redux/authActions";
+import { validationSchema } from "../../schema";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 
-const Signup: React.FC = (userData) => {
-  const [formData, setFormData] = useState({
-    username: "",
-    email: "",
-    password: "",
-  });
-
+const Signup: React.FC = () => {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleTogglePassword = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    dispatch(signupAsync(formData));
+  const handleSubmit = async (values: any) => {
+    await dispatch(signupAsync(values));
     router.push("/task");
   };
 
@@ -44,40 +44,67 @@ const Signup: React.FC = (userData) => {
         <Card>
           <CardContent>
             <Typography variant="h6">Sign Up</Typography>
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Username"
-              name="username"
-              value={formData.username}
-              onChange={handleInputChange}
-            />
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Email"
-              name="email"
-              type="email"
-              value={formData.email}
-              onChange={handleInputChange}
-            />
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Password"
-              name="password"
-              type="password"
-              value={formData.password}
-              onChange={handleInputChange}
-            />
-            <Button
-              type="button"
-              variant="contained"
-              color="primary"
-              onClick={handleSubmit}
+            <Formik
+              initialValues={{
+                username: "",
+                email: "",
+                password: "",
+              }}
+              validationSchema={validationSchema}
+              onSubmit={handleSubmit}
             >
-              Sign Up
-            </Button>
+              {({ errors, touched }) => (
+                <Form>
+                  <Field
+                    as={TextField}
+                    fullWidth
+                    margin="normal"
+                    label="Username"
+                    name="username"
+                    error={touched.username && !!errors.username}
+                    helperText={<ErrorMessage name="username" />}
+                  />
+                  <Field
+                    as={TextField}
+                    fullWidth
+                    margin="normal"
+                    label="Email"
+                    name="email"
+                    type="email"
+                    error={touched.email && !!errors.email}
+                    helperText={<ErrorMessage name="email" />}
+                  />
+                  <Field
+                    as={TextField}
+                    fullWidth
+                    margin="normal"
+                    label="Password"
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton onClick={handleTogglePassword} edge="end">
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                    error={touched.password && !!errors.password}
+                    helperText={<ErrorMessage name="password" />}
+                  />
+                  <Button type="submit" variant="contained" color="primary">
+                    Sign Up
+                  </Button>
+                </Form>
+              )}
+            </Formik>
+            <Typography variant="body1" style={{ marginTop: "1rem" }}>
+              Already have an account?
+              <Link href="/login">
+                <Button color="primary">Login</Button>
+              </Link>
+            </Typography>
           </CardContent>
         </Card>
       </Grid>

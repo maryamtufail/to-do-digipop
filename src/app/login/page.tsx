@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { useState } from "react";
 import {
   Button,
@@ -7,29 +7,29 @@ import {
   Card,
   CardContent,
   Grid,
+  IconButton,
+  InputAdornment,
 } from "@mui/material";
-import { useRouter } from 'next/navigation';
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { loginAsync } from "../../redux/authActions";
+import { loginSchema } from "../../schema";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 
 const Login: React.FC = () => {
- 
-  const [formData, setFormData] = useState({
-    username: "",
-    password: "",
-  });
-
   const dispatch = useDispatch();
   const router = useRouter();
-  
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleTogglePassword = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    dispatch(loginAsync(formData));
+  const handleSubmit = async (values: any) => {
+    await dispatch(loginAsync(values));
     router.push("/task");
   };
 
@@ -46,33 +46,64 @@ const Login: React.FC = () => {
             <Typography variant="h6" style={{ marginBottom: "1rem" }}>
               Login
             </Typography>
-            <TextField
-              fullWidth
-              margin="normal"
-              label="username"
-              name="username"
-              type="username"
-              value={formData.username}
-              onChange={handleInputChange}
-            />
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Password"
-              name="password"
-              type="password"
-              value={formData.password}
-              onChange={handleInputChange}
-            />
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              style={{ marginBottom: "1rem", marginTop: "1rem" }}
-              onClick={handleSubmit}
+            <Formik
+              initialValues={{
+                username: "",
+                password: "",
+              }}
+              loginSchema={loginSchema}
+              onSubmit={handleSubmit}
             >
-              Login
-            </Button>
+              {({ errors, touched }) => (
+                <Form>
+                  <Field
+                    as={TextField}
+                    fullWidth
+                    margin="normal"
+                    label="Username"
+                    name="username"
+                    type="text"
+                    error={touched.username && !!errors.username}
+                    helperText={<ErrorMessage name="username" />}
+                  />
+
+                  <Field
+                    as={TextField}
+                    fullWidth
+                    margin="normal"
+                    label="Password"
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    error={touched.password && !!errors.password}
+                    helperText={<ErrorMessage name="password" />}
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton onClick={handleTogglePassword} edge="end">
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    style={{ marginBottom: "1rem", marginTop: "1rem" }}
+                  >
+                    Login
+                  </Button>
+                </Form>
+              )}
+            </Formik>
+            <Typography variant="body1" style={{ marginTop: "1rem" }}>
+              Don't have an account?
+              <Link href="/signup">
+                <Button color="primary">Sign Up</Button>
+              </Link>
+            </Typography>
           </CardContent>
         </Card>
       </Grid>
