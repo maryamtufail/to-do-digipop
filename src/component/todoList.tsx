@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { deleteTodo } from "../redux/todoSlice";
+import { deleteTodo, toggleTodoComplete } from "../redux/todoSlice"; 
 import AddTodoForm from "./AddTodoForm";
 import { makeStyles } from "@mui/styles";
 import {
@@ -14,23 +14,29 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Checkbox 
 } from "@mui/material";
 import { Delete as DeleteIcon, Edit as EditIcon } from "@mui/icons-material";
 
 interface Todo {
   id: number;
   text: string;
-  userId: number; // User ID associated with the todo
+  complete: boolean; 
+  userId: number;
 }
 
 interface TodoListProps {
   todos: Todo[];
-  userId: any; // User ID of the currently logged-in user
+  userId: any;
 }
 
 const useStyles = makeStyles({
   todoItem: {
     marginBottom: "10px",
+  },
+  completedTodo: {
+    textDecoration: "line-through", // Apply strikethrough effect to completed todos
+    color: "gray", // Set color for completed todos
   },
 });
 
@@ -48,7 +54,11 @@ const TodoList: React.FC<TodoListProps> = ({ todos, userId }) => {
     setEditTodo(todo);
   };
 
-  // Filter todos based on userId
+  // Toggle todo completion status
+  const handleToggleComplete = (id: number) => {
+    dispatch(toggleTodoComplete(id));
+  };
+
   const userTodos = todos.filter(todo => todo.userId === userId);
 
   return (
@@ -69,7 +79,13 @@ const TodoList: React.FC<TodoListProps> = ({ todos, userId }) => {
               <TableBody>
                 {userTodos.map((todo) => (
                   <TableRow key={todo.id}>
-                    <TableCell>{todo.text}</TableCell>
+                    <TableCell>
+                      <Checkbox
+                        checked={todo.complete || false}
+                        onChange={() => handleToggleComplete(todo.id)} 
+                      />
+                      <span className={todo.complete ? classes.completedTodo : undefined}>{todo.text}</span>
+                    </TableCell>
                     <TableCell>
                       <IconButton onClick={() => handleEdit(todo)}>
                         <EditIcon />
