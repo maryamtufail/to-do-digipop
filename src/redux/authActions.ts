@@ -5,7 +5,7 @@ import { loginSuccess, loginFailure, signupSuccess, signupFailure } from './auth
 const API_URL = 'https://dummyjson.com';
 
 
-export const signupAsync = (userData: any) => async (dispatch: AppDispatch) => {
+export const signupAsync = (userData: any) => async (dispatch: AppDispatch): Promise<void>  => {
   try {
     const response = await axios.post(API_URL + "/users/add", userData, {
       headers: { 'Content-Type': 'application/json' },
@@ -23,7 +23,7 @@ export const signupAsync = (userData: any) => async (dispatch: AppDispatch) => {
 
 
 
-export const loginAsync = (credentials: { id: number; username: string; password: string }) => async (dispatch: AppDispatch) => {
+export const loginAsync = (credentials: { id: number; username: string; password: string }) => async (dispatch: AppDispatch): Promise<void> => {
   try {
     const localUserData = JSON.parse(localStorage.getItem("user") || "{}");
     if (localUserData.username === credentials.username && localUserData.password === credentials.password) {

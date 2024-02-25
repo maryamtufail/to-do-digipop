@@ -6,7 +6,6 @@ interface User {
  
 }
 
-
 interface AuthState {
   isAuthenticated: boolean;
   user: User | null;

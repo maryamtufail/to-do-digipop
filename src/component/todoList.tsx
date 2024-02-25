@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { deleteTodo, toggleTodoComplete } from "../redux/todoSlice"; 
+import { deleteTodo, toggleTodoComplete } from "../redux/todoSlice";
 import AddTodoForm from "./AddTodoForm";
 import { makeStyles } from "@mui/styles";
 import {
@@ -14,14 +14,14 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Checkbox 
+  Checkbox,
 } from "@mui/material";
 import { Delete as DeleteIcon, Edit as EditIcon } from "@mui/icons-material";
 
 interface Todo {
   id: number;
   text: string;
-  complete: boolean; 
+  complete: boolean;
   userId: number;
 }
 
@@ -35,8 +35,12 @@ const useStyles = makeStyles({
     marginBottom: "10px",
   },
   completedTodo: {
-    textDecoration: "line-through", // Apply strikethrough effect to completed todos
-    color: "gray", // Set color for completed todos
+    textDecoration: "line-through",
+    color: "gray",
+  },
+  actionsCell: {
+    display: "flex",
+    justifyContent: "flex-end",
   },
 });
 
@@ -59,34 +63,39 @@ const TodoList: React.FC<TodoListProps> = ({ todos, userId }) => {
     dispatch(toggleTodoComplete(id));
   };
 
-  const userTodos = todos.filter(todo => todo.userId === userId);
+  const userTodos = todos.filter((todo) => todo.userId === userId);
 
   return (
     <Grid container justifyContent="center">
-      <Grid item xs={12} sm={8} md={6}>
-        <AddTodoForm editTodo={editTodo} userId={userId} setEditTodo={setEditTodo} />
+      <Grid item xs={12} sm={8} md={8}>
+        <AddTodoForm
+          editTodo={editTodo}
+          userId={userId}
+          setEditTodo={setEditTodo}
+          complete={editTodo?.complete || false}
+        />
         {userTodos.length === 0 ? (
           <Typography variant="body1">No todos to show</Typography>
         ) : (
           <TableContainer component={Paper}>
             <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Todo</TableCell>
-                  <TableCell>Actions</TableCell>
-                </TableRow>
-              </TableHead>
               <TableBody>
                 {userTodos.map((todo) => (
                   <TableRow key={todo.id}>
                     <TableCell>
                       <Checkbox
                         checked={todo.complete || false}
-                        onChange={() => handleToggleComplete(todo.id)} 
+                        onChange={() => handleToggleComplete(todo.id)}
                       />
-                      <span className={todo.complete ? classes.completedTodo : undefined}>{todo.text}</span>
+                      <span
+                        className={
+                          todo.complete ? classes.completedTodo : undefined
+                        }
+                      >
+                        {todo.text}
+                      </span>
                     </TableCell>
-                    <TableCell>
+                    <TableCell className={classes.actionsCell}>
                       <IconButton onClick={() => handleEdit(todo)}>
                         <EditIcon />
                       </IconButton>

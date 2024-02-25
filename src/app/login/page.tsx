@@ -15,7 +15,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { loginAsync } from "../../redux/authActions";
-import { loginSchema } from "../../schema";
+import { loginSchema } from "../../schema/loginSchema";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 
 const Login: React.FC = () => {
@@ -28,8 +28,8 @@ const Login: React.FC = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword);
   };
 
-  const handleSubmit = async (values: any) => {
-    await dispatch(loginAsync(values));
+  const handleSubmit = async (credential: any) => {
+    dispatch(loginAsync(credential));
     router.push("/task");
   };
 
@@ -51,7 +51,7 @@ const Login: React.FC = () => {
                 username: "",
                 password: "",
               }}
-              loginSchema={loginSchema}
+              validationSchema={loginSchema} 
               onSubmit={handleSubmit}
             >
               {({ errors, touched }) => (

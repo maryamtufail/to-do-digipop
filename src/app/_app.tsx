@@ -15,9 +15,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <title>{metadata.title}</title>
         <meta name="description" content={metadata.description} />
       </Head>
-     
-        <Component {...pageProps} />
-     
+      <Component {...pageProps} />
     </>
   );
 }

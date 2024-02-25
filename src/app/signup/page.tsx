@@ -15,7 +15,7 @@ import Link from 'next/link';
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { signupAsync } from "../../redux/authActions";
-import { validationSchema } from "../../schema";
+import { validationSchema } from "../../schema/validationSchema";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 
 const Signup: React.FC = () => {
