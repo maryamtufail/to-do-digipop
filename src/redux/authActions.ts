@@ -23,7 +23,7 @@ export const signupAsync = (userData: any) => async (dispatch: AppDispatch) => {
 
 
 
-export const loginAsync = (credentials: { username: string; password: string }) => async (dispatch: AppDispatch) => {
+export const loginAsync = (credentials: { id: number; username: string; password: string }) => async (dispatch: AppDispatch) => {
   try {
     const localUserData = JSON.parse(localStorage.getItem("user") || "{}");
     if (localUserData.username === credentials.username && localUserData.password === credentials.password) {
@@ -34,6 +34,7 @@ export const loginAsync = (credentials: { username: string; password: string }) 
     const response = await axios.post(
       `${API_URL}/auth/login`,
       {
+        id: credentials.id,
         username: credentials.username,
         password: credentials.password,
       },

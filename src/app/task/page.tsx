@@ -27,6 +27,9 @@ const Task: React.FC = () => {
     router.push("/login");
   };
 
+  const userId = user?.id || null;
+
+
   return (
     <Grid
       container
@@ -35,13 +38,12 @@ const Task: React.FC = () => {
     >
       <Grid item xs={6}>
         <Typography variant="h4" gutterBottom>
-          Welcome to the Task Dashboard, {user?.username || "User"}!
+          Welcome to the Task Dashboard, {user?.username && user?.id || "User"}!
         </Typography>
         <Button variant="contained" color="primary" onClick={handleLogout}>
           Logout
         </Button>
-
-        <TodoList todos={todos} />
+        <TodoList todos={todos} userId={userId} />
       </Grid>
     </Grid>
   );

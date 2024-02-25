@@ -6,6 +6,7 @@ import { makeStyles } from "@mui/styles";
 import { TextField, Button, Grid } from "@mui/material";
 
 interface AddTodoFormProps {
+  userId: any ;
   editTodo: any | null;
   setEditTodo: React.Dispatch<React.SetStateAction<any | null>>;
 }
@@ -19,7 +20,7 @@ const useStyles = makeStyles({
   }
 });
 
-const AddTodoForm: React.FC<AddTodoFormProps> = ({ editTodo, setEditTodo }) => {
+const AddTodoForm: React.FC<AddTodoFormProps> = ({ editTodo, setEditTodo, userId }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [text, setText] = useState(editTodo ? editTodo.text : "");
@@ -34,10 +35,10 @@ const AddTodoForm: React.FC<AddTodoFormProps> = ({ editTodo, setEditTodo }) => {
     e.preventDefault();
     if (text.trim() !== "") {
       if (editTodo) {
-        dispatch(updateTodo({ id: editTodo.id, text }));
+        dispatch(updateTodo({ id: editTodo.id, text, userId }));
         setEditTodo(null);
       } else {
-        dispatch(addTodo({ id: uuid(), text }));
+        dispatch(addTodo({ id: uuid(), text, userId }));
       }
       setText("");
     }

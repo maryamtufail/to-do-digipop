@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 interface Todo {
   id: any;
   text: string;
+  userId: number;
 }
 
 interface TodosState {
