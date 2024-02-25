@@ -1,10 +1,11 @@
 "use client";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { logout } from "../../redux/authSlice";
 import { Button, Typography, Grid } from "@mui/material";
+import TodoList from "~/component/todoList";
 
 const Task: React.FC = () => {
   const router = useRouter();
@@ -13,6 +14,7 @@ const Task: React.FC = () => {
     (state: RootState) => state.auth.isAuthenticated
   );
   const user = useSelector((state: RootState) => state.auth.user);
+  const todos = useSelector((state: RootState) => state.todos.todos);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -38,7 +40,8 @@ const Task: React.FC = () => {
         <Button variant="contained" color="primary" onClick={handleLogout}>
           Logout
         </Button>
-    
+
+        <TodoList todos={todos} />
       </Grid>
     </Grid>
   );
