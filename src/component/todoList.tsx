@@ -1,22 +1,21 @@
+"use client";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { deleteTodo, toggleTodoComplete } from "../redux/todoSlice";
 import AddTodoForm from "./AddTodoForm";
-import { makeStyles } from "@mui/styles";
 import {
-  Typography,
-  Grid,
-  Paper,
-  IconButton,
+  TableContainer,
   Table,
   TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
   TableRow,
+  TableCell,
   Checkbox,
+  Button,
 } from "@mui/material";
 import { Delete as DeleteIcon, Edit as EditIcon } from "@mui/icons-material";
+import ReactPaginate from "react-paginate";
+import { makeStyles } from "@mui/styles";
+import "./todo.module.css";
 
 interface Todo {
   id: number;
@@ -31,24 +30,45 @@ interface TodoListProps {
 }
 
 const useStyles = makeStyles({
-  todoItem: {
-    marginBottom: "10px",
+  icons: {
+    display: "flex",
+    justifyContent: "end",
+    alignItems: "center",
+    paddingTop: "25px",
   },
   completedTodo: {
     textDecoration: "line-through",
     color: "gray",
   },
-  actionsCell: {
+
+  pagination: {
     display: "flex",
-    justifyContent: "flex-end",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginTop: "10px",
+    listStyle: "none",
+    cursor: "pointer",
+  },
+  pageItem: {
+    marginRight: "10px",
+    marginLeft: "10px",
+  },
+  activePage: {
+    color: "#007FFF",
   },
 });
 
 const TodoList: React.FC<TodoListProps> = ({ todos, userId }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
-
+  const [currentPage, setCurrentPage] = useState<number>(0);
+  const todosPerPage = 5;
   const [editTodo, setEditTodo] = useState<Todo | null>(null);
+
+  const indexOfLastTodo = (currentPage + 1) * todosPerPage;
+  const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
+  const currentTodos = todos.slice(indexOfFirstTodo, indexOfLastTodo);
+  const totalPages = Math.ceil(todos.length / todosPerPage);
 
   const handleDelete = (id: number) => {
     dispatch(deleteTodo(id));
@@ -58,26 +78,29 @@ const TodoList: React.FC<TodoListProps> = ({ todos, userId }) => {
     setEditTodo(todo);
   };
 
-  // Toggle todo completion status
   const handleToggleComplete = (id: number) => {
     dispatch(toggleTodoComplete(id));
   };
 
-  const userTodos = todos.filter((todo) => todo.userId === userId);
+  const userTodos = currentTodos.filter((todo) => todo.userId === userId);
+
+  const onPageChange = ({ selected }: { selected: number }) => {
+    setCurrentPage(selected);
+  };
 
   return (
-    <Grid container justifyContent="center">
-      <Grid item xs={12} sm={8} md={8}>
-        <AddTodoForm
-          editTodo={editTodo}
-          userId={userId}
-          setEditTodo={setEditTodo}
-          complete={editTodo?.complete || false}
-        />
-        {userTodos.length === 0 ? (
-          <Typography variant="body1">No todos to show</Typography>
-        ) : (
-          <TableContainer component={Paper}>
+    <>
+      <AddTodoForm
+        userId={userId}
+        editTodo={editTodo}
+        setEditTodo={setEditTodo}
+        complete={editTodo?.complete || false}
+      />
+      {userTodos.length === 0 ? (
+        <p>No todos to show</p>
+      ) : (
+        <>
+          <TableContainer>
             <Table>
               <TableBody>
                 {userTodos.map((todo) => (
@@ -95,22 +118,35 @@ const TodoList: React.FC<TodoListProps> = ({ todos, userId }) => {
                         {todo.text}
                       </span>
                     </TableCell>
-                    <TableCell className={classes.actionsCell}>
-                      <IconButton onClick={() => handleEdit(todo)}>
+                    <TableCell className={classes.icons}>
+                      <Button onClick={() => handleEdit(todo)}>
                         <EditIcon />
-                      </IconButton>
-                      <IconButton onClick={() => handleDelete(todo.id)}>
+                      </Button>
+                      <Button onClick={() => handleDelete(todo.id)}>
                         <DeleteIcon />
-                      </IconButton>
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
           </TableContainer>
-        )}
-      </Grid>
-    </Grid>
+
+          <ReactPaginate
+            className={classes.pagination}
+            previousLabel={"Previous"}
+            nextLabel={"Next"}
+            breakLabel={"..."}
+            pageCount={totalPages}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={5}
+            onPageChange={onPageChange}
+            activeClassName={classes.activePage}
+            pageClassName={classes.pageItem}
+          />
+        </>
+      )}
+    </>
   );
 };
 
