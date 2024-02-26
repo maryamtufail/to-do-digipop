@@ -1,5 +1,4 @@
 "use client"
-import React from "react";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Provider } from "react-redux";
@@ -11,7 +10,7 @@ const RootLayout: React.FC = ({ children }: any) => {
   return (
     <html lang="en">
       <Provider store={store}>
-        <body className={inter.className}>{children}</body>
+        <body className={inter.className} style={{width: "80%", margin: "0 auto"}}>{children}</body>
       </Provider>
     </html>
   );
