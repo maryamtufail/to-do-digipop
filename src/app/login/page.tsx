@@ -40,7 +40,7 @@ const Login: React.FC = () => {
       alignItems="center"
       style={{ height: "100vh" }}
     >
-      <Grid item xs={6}>
+      <Grid item  xs={12} sm={6}>
         <Card>
           <CardContent>
             <Typography variant="h6" style={{ marginBottom: "1rem" }}>

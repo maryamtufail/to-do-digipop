@@ -11,7 +11,7 @@ import {
   InputAdornment,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import Link from 'next/link';
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { signupAsync } from "../../redux/authActions";
@@ -40,7 +40,7 @@ const Signup: React.FC = () => {
       alignItems="center"
       style={{ height: "100vh" }}
     >
-      <Grid item xs={6}>
+      <Grid item xs={12} sm={6}>
         <Card>
           <CardContent>
             <Typography variant="h6">Sign Up</Typography>
